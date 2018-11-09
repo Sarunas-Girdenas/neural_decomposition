@@ -198,25 +198,26 @@ class NeuralDecomposition:
         """
 
         # take the trained model
-        keras_model_cycles = copy(self.keras_model)
-
+        
+        keras_model_cycles = self.keras_model
+        
         # these lines are taken from the function initialize_weights()
         # set trend g(t) weights to zero
 
         for layer in range(2, 8):
             if layer == 2:
-                keras_model_cycles.weights[layer].set_value(
+                set_value(keras_model_cycles.weights[layer],
                     (np.zeros((1, self.units))).astype('float32')) # linear/kernel
             elif layer in [3, 5, 7]:
                 # linear/bias
                 # sotfplus/bias
                 # sigmoid/bias
-                keras_model_cycles.weights[layer].set_value(
+                set_value(keras_model_cycles.weights[layer],
                     (np.zeros((self.units))).astype('float32'))
             else:
                 # softplus/kernel
                 # sigmoid/kernel
-                keras_model_cycles.weights[layer].set_value(
+                set_value(keras_model_cycles.weights[layer],
                     (np.zeros((1, self.units))).astype('float32')) # softplus/kernel
 
         # compute cyclical component
@@ -237,11 +238,11 @@ class NeuralDecomposition:
         """
 
         # take the trained model
-        keras_model_trend = copy(self.keras_model)
+        keras_model_trend = self.keras_model
 
-        keras_model_trend.weights[0].set_value(
+        set_value(keras_model_trend.weights[0],
             (0 * np.floor(np.arange(self.n_data)))[np.newaxis, :].astype('float32')) # sin/kernel
-        keras_model_trend.weights[1].set_value(
+        set_value(keras_model_trend.weights[1],
             (np.arange(self.n_data) * 0).astype('float32')) # sin/bias
 
         # compute trend component
